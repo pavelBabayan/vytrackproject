@@ -44,20 +44,58 @@ public class DefaultOrder extends TestBase {
         //verify that license plate values in ascending order
         allCarsPage.chooseHeaderGrid("2").click();
         BrowserUtils.waitFor(1);
+        System.out.println("Ascending order");
         allCarsPage.ascendingOrder(allCarsPage.column("2"));
-       // WebElement wait = allCarsPage.chooseHeaderGrid("2");
-       BrowserUtils.waitForVisibility(allCarsPage.chooseHeaderGrid("2"),5);
+        BrowserUtils.waitForVisibility(allCarsPage.chooseHeaderGrid("2"),5);
 
        //verify that license plate values in descending order
         allCarsPage.chooseHeaderGrid("2").click();
         BrowserUtils.waitFor(2);
+        System.out.println("Descending order");
         allCarsPage.descendingOrder(allCarsPage.column("2"));
+    }
 
+    @Test(description = "Verify that all records that are displayed can be sorted by DRIVERcolumn")
+    public void test2(){
 
+        untilAllCarsTitle();
+        wait.until(ExpectedConditions.titleIs("All - Car - Entities - System - Car - Entities - System"));
 
+        //Verify that all records that are displayed are sorted by DRIVERin Ascending order
+        allCarsPage.chooseHeaderGrid("4").click();
+        BrowserUtils.waitFor(1);
+        System.out.println("Ascending order");
+        allCarsPage.ascendingOrder(allCarsPage.column("4"));
+       BrowserUtils.waitForVisibility(allCarsPage.chooseHeaderGrid("4"),5);
 
+       //Verify that all records that are displayed are sorted by DRIVERin Descending order
+        allCarsPage.chooseHeaderGrid("4").click();
+        BrowserUtils.waitFor(2);
+        System.out.println("Descending order");
+        allCarsPage.descendingOrder(allCarsPage.column("4"));
+    }
 
+    @Test(description = "Select All checkbox")
+    public void tes3(){
+        untilAllCarsTitle();
+        wait.until(ExpectedConditions.titleIs("All - Car - Entities - System - Car - Entities - System"));
+        //Verify that none of the checkboxes on the left side of the table are selected
+        BrowserUtils.waitForClickablility(allCarsPage.chooseHeaderGrid("1"),5);
+        List<WebElement> checkBoxes = allCarsPage.column("1");
+        for (WebElement box : checkBoxes){
+            BrowserUtils.waitForClickablility(box,5);
+            Assert.assertFalse(box.isSelected());
+        }
+        //Verify that all of the checkboxes are now selected
+        BrowserUtils.waitForClickablility(allCarsPage.chooseHeaderGrid("1"),5);
+        allCarsPage.chooseHeaderGrid("1").click();
+        BrowserUtils.waitFor(1);
+        driver.findElement(By.linkText("All")).click();
+        for (WebElement box : checkBoxes){
+            BrowserUtils.waitForClickablility(box,5);
+            Assert.assertFalse(box.isSelected());
+        }
+        }
     }
 
 
-}

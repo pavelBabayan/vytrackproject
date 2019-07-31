@@ -74,6 +74,4 @@ public class AllCarsPage {
         System.out.println(descendOrder);
         Assert.assertEquals(nonSorted,descendOrder,"Not is descent order");
     }
-
-
 }
