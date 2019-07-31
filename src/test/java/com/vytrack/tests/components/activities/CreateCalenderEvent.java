@@ -1,6 +1,6 @@
 package com.vytrack.tests.components.activities;
 
-import com.vytrack.utilities.VyTrackUnits;
+import com.vytrack.utilities.DashboardPage;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -36,9 +36,9 @@ public class CreateCalenderEvent {
     @Test
     public void saveAndCancelOptionsTest() throws InterruptedException {
         String cancelCss = "a[title='Cancel']";
-        Assert.assertTrue(VyTrackUnits.isElementDisplayed(driver, By.cssSelector(cancelCss)));
+        Assert.assertTrue(DashboardPage.isElementDisplayed(driver, By.cssSelector(cancelCss)));
         String saveAndCloseBtn = "(//div[contains(@class, 'btn-group pull-right')]//button)[1]";
-        Assert.assertTrue(VyTrackUnits.isElementDisplayed(driver, By.xpath(saveAndCloseBtn)));
+        Assert.assertTrue(DashboardPage.isElementDisplayed(driver, By.xpath(saveAndCloseBtn)));
 
         driver.findElement(By.className("caret")).click();
         Thread.sleep(1000);
@@ -47,12 +47,12 @@ public class CreateCalenderEvent {
         String saveNewOption = "(//div[contains(@class, 'btn-group pull-right')]//button)[3]";
         String saveOption = "(//div[contains(@class, 'btn-group pull-right')]//button)[4]";
 
-        Assert.assertTrue(VyTrackUnits.isElementDisplayed(driver, By.xpath(saveCloseOption)));
-        Assert.assertTrue(VyTrackUnits.isElementDisplayed(driver, By.xpath(saveNewOption)));
-        Assert.assertTrue(VyTrackUnits.isElementDisplayed(driver, By.xpath(saveOption)));
+        Assert.assertTrue(DashboardPage.isElementDisplayed(driver, By.xpath(saveCloseOption)));
+        Assert.assertTrue(DashboardPage.isElementDisplayed(driver, By.xpath(saveNewOption)));
+        Assert.assertTrue(DashboardPage.isElementDisplayed(driver, By.xpath(saveOption)));
 
         driver.findElement(By.className("caret")).click();
-        Assert.assertFalse(VyTrackUnits.isElementDisplayed(driver, By.xpath(saveCloseOption)));
+        Assert.assertFalse(DashboardPage.isElementDisplayed(driver, By.xpath(saveCloseOption)));
 
     }
 

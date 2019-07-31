@@ -7,6 +7,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -335,6 +338,22 @@ public class BrowserUtils {
         JavascriptExecutor jse = (JavascriptExecutor) Driver.get();
         jse.executeScript(command);
 
+    }
+
+    public static String dateTime (WebDriver driver, String dateOrtime, int add) {
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+        date = date.plusDays(add);
+        time = time.plusHours(add);
+        String dateFuture = date.format(DateTimeFormatter.ofPattern("MMM d, yyyy"));
+        String timeFuture = time.format(DateTimeFormatter.ofPattern("h:mm a"));
+        if (dateOrtime.equalsIgnoreCase("date")) {
+            return dateFuture;
+        } else if (dateOrtime.equalsIgnoreCase("time")){
+            return timeFuture;
+        } else {
+            return null;
+        }
     }
 
 

@@ -1,81 +1,154 @@
 package com.vytrack.tests.components.DateTime;
 
+import com.vytrack.pages.AllCalendarEventsPage;
+import com.vytrack.pages.CreateCalendarEventPage;
+import com.vytrack.pages.DashboardPage;
+import com.vytrack.pages.LoginPage;
 import com.vytrack.utilities.*;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+
+import org.openqa.selenium.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.concurrent.TimeUnit;
-
 public class DateTimeTest extends TestBase {
 
+    LoginPage loginPage =new LoginPage();
+    DashboardPage dashboardPage = new DashboardPage();
+    AllCalendarEventsPage allCreateCalendarEventPage = new AllCalendarEventsPage();
+    CreateCalendarEventPage createCalendarEventPage  = new CreateCalendarEventPage();
 
 
-    @Test(description = "Date Time, End date auto adjust")
-            public void test1() throws InterruptedException {
+    public void untilClickCreateCalendar() throws InterruptedException {
 
         //configuration properties
         String url = ConfigurationReader.get("url");
         String username = ConfigurationReader.get("validUsername");
         String password = ConfigurationReader.get("validPassword");
         Driver.get().get(url);
-        VyTrackUnits.login(driver,username,password);
-        VyTrackUnits.selectMenuOption(driver,"Activities","Calendar Events");
-        WebElement createCalendarEvent = driver.findElement(By.cssSelector("[title='Create Calendar event']"));
-//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("[title='Create Calendar event']")));
-//        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("[title='Create Calendar event']")));
-        Thread.sleep(10000);
-        createCalendarEvent.click();
-        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@*='submit']")));
-        Thread.sleep(10000);
-        WebElement startDate = driver.findElement(By.cssSelector("[placeholder='Choose a date']"));
-        startDate.clear();
-        Thread.sleep(1000);
-        startDate.sendKeys("Jul 29, 2020"+ Keys.ENTER);
-        Thread.sleep(2000);
-        BrowserUtils.clickWithJS(startDate);
-        String startDat1 = startDate.getText();
-        WebElement endDate = driver.findElement(By.cssSelector("input[class$='hasDatepicker']"));
-        BrowserUtils.hover(endDate);
-        Thread.sleep(2000);
-        String endDate1=endDate.getText();
-        try {
-            Assert.assertEquals(startDat1, endDate1, "Dont match");
 
-        }catch(Exception e){
+        loginPage.login(username,password);
+        dashboardPage.selectMenuOption("Activities","Calendar Events");
+
+        BrowserUtils.waitForClickablility(allCreateCalendarEventPage.createCalendarEventButton, 5);
+        BrowserUtils.clickWithJS(allCreateCalendarEventPage.createCalendarEventButton);
+
+        BrowserUtils.waitForClickablility(createCalendarEventPage.saveAndCloseButton,5);
+        driver.navigate().refresh();
+    }
+
+
+
+    @Test(description = "Date Time, End date auto adjust")
+    public void test1() throws InterruptedException {
+
+        untilClickCreateCalendar();
+
+        String startDate = createCalendarEventPage.startDateBox.getAttribute("value");
+        String endDate = createCalendarEventPage.endDateBox.getAttribute("value");
+
+        //start date
+        BrowserUtils.waitForClickablility(createCalendarEventPage.startDateBox, 5);
+        createCalendarEventPage.startDateBox.clear();
+        BrowserUtils.waitFor(2);
+        createCalendarEventPage.startDateBox.sendKeys("Jul 29, 2020" + Keys.ENTER);
+        BrowserUtils.waitForClickablility(createCalendarEventPage.startDateBox, 5);
+        String startDate2 = createCalendarEventPage.startDateBox.getAttribute("value");
+        //end date
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endDateBox, 5);
+        String endDate2 = createCalendarEventPage.endDateBox.getAttribute("value");
+        BrowserUtils.waitForVisibility(createCalendarEventPage.endDateBox, 5);
+
+        //comparing
+        try {
+            Assert.assertEquals(endDate2, startDate2, "Dont match");
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        BrowserUtils.clickWithJS(endDate);
-        Thread.sleep(2000);
-        endDate1 = endDate.getText();
-        startDat1=startDate.getText();
-        driver.findElement(By.xpath("//button[@data-event='click' and contains(text(),'Today')]")).click();
+        //putting date back as it was
+        //start date
+        BrowserUtils.waitForClickablility(createCalendarEventPage.startDateBox, 5);
+        createCalendarEventPage.startDateBox.clear();
+        BrowserUtils.waitFor(2);
+        createCalendarEventPage.startDateBox.sendKeys(startDate + Keys.ENTER);
+        String startDate3 = createCalendarEventPage.startDateBox.getAttribute("value");
+        //end date
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endDateBox, 5);
+        String endDate3 = createCalendarEventPage.endDateBox.getAttribute("value");
+        BrowserUtils.waitForVisibility(createCalendarEventPage.endDateBox, 5);
+        //comparing dates
+        try {
+            Assert.assertEquals(endDate3, startDate3, "Dont match");
 
-        try{
-            Assert.assertEquals(endDate1,startDat1,"Dont match");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @Test(description = "Date Time, End time auto adjust")
+    public void test2() throws InterruptedException {
+
+        untilClickCreateCalendar();
+        //StartTime
+        BrowserUtils.waitForClickablility(createCalendarEventPage.startTimeBox, 5);
+        BrowserUtils.clickWithJS(createCalendarEventPage.startTimeBox);
+        //pick 1 am
+        createCalendarEventPage.setStartTimeBoxPicker("am","1:00 AM");
+        //EndTime
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endTimeBox, 5);
+        BrowserUtils.doubleClick(createCalendarEventPage.endTimeBox);
+        BrowserUtils.waitForVisibility(createCalendarEventPage.endTimeBox, 5);
+        //comparing end time
+        try {
+            Assert.assertEquals(createCalendarEventPage.endTimeBox.getAttribute("value"), "2:00 AM");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @Test(description = "Date Time, End date/time auto adjust")
+    public void test3() throws InterruptedException {
+
+        untilClickCreateCalendar();
+
+        //StartTime
+        BrowserUtils.waitForClickablility(createCalendarEventPage.startTimeBox, 5);
+        BrowserUtils.clickWithJS(createCalendarEventPage.startTimeBox);
+        //pick 11:00 PM
+        createCalendarEventPage.setStartTimeBoxPicker("pm","11:30 PM");
+
+        //EndTime
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endTimeBox, 5);
+        BrowserUtils.doubleClick(createCalendarEventPage.endTimeBox);
+        BrowserUtils.waitForVisibility(createCalendarEventPage.endTimeBox, 5);
+        String expectedEndTime = "12:30 AM";
+        String actualEndTime = createCalendarEventPage.endTimeBox.getAttribute("value");
+
+        //End Date
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endDateBox, 5);
+        String endDate = createCalendarEventPage.endDateBox.getAttribute("value");
+        String expectedEndDate = BrowserUtils.dateTime(driver,"date",1);
+        BrowserUtils.waitForClickablility(createCalendarEventPage.endDateBox, 5);
+        try {
+            Assert.assertEquals(endDate, expectedEndDate);
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
+        try {
+            Assert.assertEquals(actualEndTime, expectedEndTime);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
-}
+
+
+
+
+
+
+

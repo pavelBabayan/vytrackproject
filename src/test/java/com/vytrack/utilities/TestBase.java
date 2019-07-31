@@ -21,13 +21,12 @@ public class TestBase {
         //TODO have to add this all the time
         driver.manage().window().fullscreen();
 
-        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-        //driver.manage().timeouts().setScriptTimeout(120,TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         actions = new Actions(driver);
-        wait = new WebDriverWait(driver,30);
+        wait = new WebDriverWait(driver,20);
     }
 
-    //TODO collin methid from Driver to close driver
+    //TODO collin method from Driver to close driver
     @AfterMethod
     public void closingBrowser() throws InterruptedException {
        // Thread.sleep(5000);
