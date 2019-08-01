@@ -79,23 +79,23 @@ public class DefaultOrder extends TestBase {
     public void tes3(){
         untilAllCarsTitle();
         wait.until(ExpectedConditions.titleIs("All - Car - Entities - System - Car - Entities - System"));
+
         //Verify that none of the checkboxes on the left side of the table are selected
-        BrowserUtils.waitForClickablility(allCarsPage.chooseHeaderGrid("1"),5);
-        List<WebElement> checkBoxes = allCarsPage.column("1");
+        BrowserUtils.waitForClickablility(allCarsPage.headerCheckBox,5);
+        List<WebElement> checkBoxes = allCarsPage.checboxesUnderHeader;
         for (WebElement box : checkBoxes){
             BrowserUtils.waitForClickablility(box,5);
             Assert.assertFalse(box.isSelected());
         }
         //Verify that all of the checkboxes are now selected
-        BrowserUtils.waitForClickablility(allCarsPage.chooseHeaderGrid("1"),5);
-        allCarsPage.chooseHeaderGrid("1").click();
-        BrowserUtils.waitFor(1);
-        driver.findElement(By.linkText("All")).click();
+        BrowserUtils.waitForClickablility(allCarsPage.headerCheckBox,5);
+        allCarsPage.headerCheckBox.click();
+        checkBoxes = allCarsPage.checboxesUnderHeader;
         for (WebElement box : checkBoxes){
             BrowserUtils.waitForClickablility(box,5);
-            Assert.assertFalse(box.isSelected());
-        }
+            Assert.assertTrue(box.isSelected());
         }
     }
+}
 
 

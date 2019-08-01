@@ -21,6 +21,18 @@ public class AllCarsPage {
     }
 
 
+    @FindBy(xpath = "//table[starts-with(@class,'grid table')]/tbody/tr/td/input")
+    @CacheLookup
+    public List <WebElement> checboxesUnderHeader;
+
+
+    @FindBy(css = "button[class*='small dropdown-toggle']>input")
+    @CacheLookup
+    public WebElement headerCheckBox;
+
+
+
+
 
     //TODO choosing header grid: licence plate,tag,driver etc..
     public WebElement chooseHeaderGrid(String idx){
